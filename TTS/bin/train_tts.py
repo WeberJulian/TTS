@@ -31,6 +31,7 @@ from TTS.utils.generic_utils import (KeepAverage, count_parameters,
                                      create_experiment_folder, get_git_branch,
                                      remove_experiment_folder, set_init_dict)
 from TTS.utils.io import copy_config_file, load_config
+from TTS.tts.utils.io import load_checkpoint
 from TTS.utils.radam import RAdam
 from TTS.utils.tensorboard_logger import TensorboardLogger
 from TTS.utils.training import (NoamLR, adam_weight_decay, check_update,
@@ -552,7 +553,7 @@ def main(args):  # pylint: disable=redefined-outer-name
     criterion = TacotronLoss(c, stopnet_pos_weight=10.0, ga_sigma=0.4)
 
     if args.restore_path:
-        checkpoint = torch.load(args.restore_path, map_location='cpu')
+        checkpoint = load_checkpoint(model, args.restore_path, amp, use_cuda)
         try:
             # TODO: fix optimizer init, model.cuda() needs to be called before
             # optimizer restore
